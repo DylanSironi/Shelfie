@@ -1,10 +1,22 @@
-// require("dotenv").config();
+require("dotenv").config();
 const express = require("express");
-// const massive = require("massive");
+const massive = require("massive");
 const controller = require("./controller")
 
 const app = express();
 
+const { SERVER_PORT, CONNECTION_STRING } = process.env;
+
+massive({
+    connectionString: CONNECTION_STRING,
+    ssl: {rejectUnauthorized: false}
+})
+.then(db => {
+    app.set('db', db)
+})
+.catch(err => console.log(err));
+
+
 app.use(express.json());
 
-app.listen(5555, () => console.log(`Server is running on 5555`));
+app.listen(SERVER_PORT, () => console.log(`Server is running on ${SERVER_PORT}`));
